@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useRef, useState, memo } from "react"
-import NodeContainer from "./NodeContainer";
 
 const TreeGenerator = (props) => {
 
