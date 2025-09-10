@@ -1,0 +1,75 @@
+/* CustomNode.module.css */
+.customNode {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  color: white;
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  min-width: 200px;
+  max-width: 300px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.customNode::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.customNode:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.nodeContent {
+  position: relative;
+  z-index: 1;
+}
+
+.rootNode {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-width: 250px;
+}
+
+.rootNode:hover {
+  box-shadow: 0 8px 24px rgba(17, 153, 142, 0.4);
+}
+
+.leafNode {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  color: #2c3e50;
+}
+
+.leafNode:hover {
+  box-shadow: 0 8px 24px rgba(252, 182, 159, 0.4);
+}
+
+.nodeHandle {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 50%;
+}
+
+.nodeHandle.target {
+  top: -6px;
+}
+
+.nodeHandle.source {
+  bottom: -6px;
+}

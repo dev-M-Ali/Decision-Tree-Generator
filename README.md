@@ -1,70 +1,56 @@
-# Getting Started with Create React App
+# Decision Tree Generator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Often, I found it useful to analyze situations using decision trees (well, mostly, graphs in my case) to make a decision. Keeping that in mind, I thought to create a simple web-app to create decision trees using LLMs.
 
-## Available Scripts
+Therefore, we present to you our Decision Tree Generator: A simple web application that transforms complex decisions into clear, visual decision trees using AI. Built with React and powered by OpenRouter's AI models.
 
-In the project directory, you can run:
+![Decision Tree Generator](https://img.shields.io/badge/React-18.0+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **AI-Powered Decision Trees**: Generate comprehensive decision trees from natural language descriptions
+- **Interactive Visualization**: Beautiful, interactive tree visualization using ReactFlow
+- **Multiple Layouts**: Switch between vertical and horizontal tree layouts
+- **Tree Management**: Save, load, and manage multiple decision trees
+- **Professional UI**: Modern, glass-morphism design with smooth animations
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Before you begin, ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (version 14.0 or higher)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- An [OpenRouter API key](https://openrouter.ai/) for AI functionality (it's free)
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/dev-M-Ali/Decision-Tree-Generator.git
+   cd Decision-Tree-Generator/decision-tree-generator
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Start the development server**
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000) to view the application.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🛠️ Built With
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **React** - Frontend framework
+- **ReactFlow** - Interactive node-based UI
+- **Dagre** - Graph layout algorithm
+- **Axios** - HTTP client for API requests
+- **OpenRouter API** - AI-powered decision tree generation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

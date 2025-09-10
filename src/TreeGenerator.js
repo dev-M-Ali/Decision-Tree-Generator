@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useRef, useState, memo } from "react"
+import styles from './TreeGenerator.module.css';
 
 const TreeGenerator = (props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const userPrompt = useRef();
 
     const systemPrompt = `
     You are a Decision Tree Generator AI. 
@@ -21,9 +24,115 @@ const TreeGenerator = (props) => {
     5. Do not include extra explanations or formatting outside the JSON objects.
     `;
 
-    const userPrompt = useRef();
+    const getTreeGenerationData = async () => {
+        if (!userPrompt.current.value.trim()) {
+            alert('Please enter a prompt before generating the tree.');
+            return;
+        }
 
-    const getTreeGenerationData = () => {
+        setIsLoading(true);
+        
+        try {
+            const response = await axios.post("https://openrouter.ai/api/v1/chat/completions",
+                {
+                    "model": "deepseek/deepseek-chat-v3.1:free",
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": systemPrompt
+                        },
+                        {
+                            "role": "user",
+                            "content": userPrompt.current.value
+                        }
+                    ]
+                },
+                {
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem('openRouterKey'),
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            console.log(response.data.choices[0].message.content);
+            props.addNewTree(response.data.choices[0].message.content);
+        } catch (error) {
+            console.error('Error generating tree:', error);
+            alert('Failed to generate decision tree. Please check your API key and try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const examplePrompts = [
+        "Should I buy a house or continue renting as a young professional?",
+        "Help me decide between different career paths after graduation",
+        "Should I start my own business or stay in my current job?"
+    ];
+
+    return (
+        <div className={styles.generatorContainer}>
+            <div className={styles.generatorHeader}>
+                <h2 className={styles.generatorTitle}>Create Your Decision Tree</h2>
+                <p className={styles.generatorDescription}>
+                    Describe your decision challenge in detail, and our AI will create a comprehensive decision tree to guide your thinking process.
+                </p>
+            </div>
+
+            <div className={styles.promptSection}>
+                <label className={styles.promptLabel}>
+                    Describe your decision challenge:
+                </label>
+                <textarea 
+                    className={styles.promptTextarea}
+                    placeholder="Please be as detailed as possible. For example: 'I'm a recent college graduate torn between accepting a stable corporate job offer versus pursuing freelance work in my field. I value both financial security and creative freedom, but I'm unsure about the long-term implications of each choice...'"
+                    ref={userPrompt}
+                    rows={6}
+                />
+            </div>
+
+            <div className={styles.generateSection}>
+                <button 
+                    onClick={getTreeGenerationData}
+                    disabled={isLoading}
+                    className={styles.generateButton}
+                >
+                    {isLoading ? (
+                        <div className={styles.loadingState}>
+                            <div className={styles.spinner}></div>
+                            Generating your decision tree...
+                        </div>
+                    ) : (
+                        "Generate Decision Tree"
+                    )}
+                </button>
+            </div>
+
+            <div className={styles.exampleSection}>
+                <div className={styles.exampleHeader}>
+                    <span className={styles.exampleIcon}>💡</span>
+                    Need inspiration? Try one of these examples:
+                </div>
+                <div className={styles.examplePrompts}>
+                    {examplePrompts.map((prompt, index) => (
+                        <div 
+                            key={index}
+                            className={styles.examplePrompt}
+                            onClick={() => {
+                                if (userPrompt.current) {
+                                    userPrompt.current.value = prompt;
+                                }
+                            }}
+                        >
+                            {prompt}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
         // props.addNewTree(`[
         //             { "parent": -1, "id": 0, "content": "Decide between freelancing or a job as a fresh graduate" },
         //             { "parent": 0, "id": 1, "content": "What is your priority: financial stability or flexibility?" },
@@ -47,51 +156,4 @@ const TreeGenerator = (props) => {
         //             { "parent": 17, "id": 19, "content": "Job typically has fixed hours, reducing overtime risk" },
         //             { "parent": 0, "id": 20, "content": "Are you comfortable with administrative tasks (taxes, contracts)?" },
         //             { "parent": 20, "id": 21, "content": "Yes, or willing to learn: Freelancing is manageable" },
-        //             { "parent": 20, "id": 22, "content": "No, prefer simplicity: Job handles these for you" },
-        //             { "parent": 21, "id": 23, "content": "Freelancing requires managing invoices, taxes, legal aspects" },
-        //             { "parent": 22, "id": 24, "content": "Job provides HR support and less paperwork for you" },
-        //             { "parent": 0, "id": 25, "content": "What are your long-term career goals?" },
-        //             { "parent": 25, "id": 26, "content": "Build a business/be your own boss: Freelancing path" },
-        //             { "parent": 25, "id": 27, "content": "Climb corporate ladder/gain title progression: Job path" },
-        //             { "parent": 26, "id": 28, "content": "Freelancing can lead to entrepreneurship but has higher risk" },
-        //             { "parent": 27, "id": 29, "content": "Job offers promotions, stability, and recognized experience" }
-        //         ]`)
-
-        axios.post("https://openrouter.ai/api/v1/chat/completions",
-            {
-                "model": "deepseek/deepseek-chat-v3.1:free",
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": systemPrompt
-                    },
-                    {
-                        "role": "user",
-                        "content": userPrompt.current.value
-                    }
-                ]
-            },
-            {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem('openRouterKey'),
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => {
-                console.log(response.data.choices[0].message.content)
-
-                //Side-effect:
-                props.addNewTree(response.data.choices[0].message.content)
-            })
-    }
-
-    return <div>
-        <h2>Prompt</h2>
-
-        <input type="text" placeholder="Kindly enter the details of the issue you would like help deciding on. Please be as detailed as possible." ref={userPrompt}></input>
-
-        <button onClick={getTreeGenerationData}>Initiate tree generation</button>
-    </div>
-}
-
-export default memo(TreeGenerator)
+export default memo(TreeGenerator);

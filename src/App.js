@@ -1,9 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
 import TreeGenerator from './TreeGenerator';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import KeyInput from './KeyInput';
 import Tree from './Tree';
+import styles from './App.module.css';
 
 function App() {
   const [openRouterKeyState, setOpenRouterKey] = useState(localStorage.getItem('openRouterKey'))
@@ -24,40 +23,69 @@ function App() {
     })
   }
 
-  // console.log("Index of tree shown is now: ", indexOfTreeShown)
-  // console.log(localStorage.getItem(String(indexOfTreeShown)))
-  // console.log("Number of trees created yet is: ", treesCreated)
-  // console.log(existingNumOfTrees)
-
   return (
-    <div className="App">
-      <h1>Decision Tree Generator</h1>
+    <div className={styles.app}>
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>Decision Tree Generator</h1>
+          <p className={styles.subtitle}>Transform complex decisions into clear, visual pathways</p>
+        </header>
 
-      {
-        openRouterKeyState === null ?
-          <KeyInput setKey={initializeKey} /> :
-          <div>
-            <button onClick={() => setOpenRouterKey(null)}>Change OpenRouter Key</button>
-            <div>
-              <h4>Previous trees: </h4>
-              {
-                [...Array(existingNumOfTrees)].map((value, index) => {
-                  return <button onClick={() => setIndexOfTreeShown(index)}>{index + 1}</button>
-                })
-              }
-              <button onClick={() => setIndexOfTreeShown(existingNumOfTrees)}>New</button>
+        {openRouterKeyState === null ? (
+          <KeyInput setKey={initializeKey} />
+        ) : (
+          <div className={styles.controlPanel}>
+            <div className={styles.keySection}>
+              <div className={styles.keyInfo}>
+                <div className={styles.keyIcon}></div>
+                <span>OpenRouter API Key Connected</span>
+              </div>
+              <button 
+                className={styles.changeKeyBtn} 
+                onClick={() => setOpenRouterKey(null)}
+              >
+                Change API Key
+              </button>
+            </div>
+            
+            <div className={styles.treeNavigation}>
+              <h3 className={styles.navigationHeader}>
+                <div className={styles.navigationIcon}>🌳</div>
+                Your Decision Trees
+              </h3>
+              <div className={styles.treeButtons}>
+                {[...Array(existingNumOfTrees)].map((value, index) => (
+                  <button 
+                    key={index}
+                    className={`${styles.treeButton} ${indexOfTreeShown === index ? styles.active : ''}`}
+                    onClick={() => setIndexOfTreeShown(index)}
+                  >
+                    Tree {index + 1}
+                  </button>
+                ))}
+                <button 
+                  className={`${styles.treeButton} ${styles.newTreeButton} ${indexOfTreeShown === existingNumOfTrees ? styles.active : ''}`}
+                  onClick={() => setIndexOfTreeShown(existingNumOfTrees)}
+                >
+                  + Create New
+                </button>
+              </div>
             </div>
           </div>
-      }
+        )}
 
-      {
-        indexOfTreeShown !== -1 &&
-        (
-          (indexOfTreeShown < existingNumOfTrees && <Tree nodes={JSON.parse(localStorage.getItem(String(indexOfTreeShown)))} />) ||
-          (indexOfTreeShown === existingNumOfTrees && <TreeGenerator addNewTree={(nodes) => { addNewTree(nodes) }} />)
-        )
-      }
-    </div >
+        <div className={styles.contentArea}>
+          {indexOfTreeShown !== -1 && (
+            (indexOfTreeShown < existingNumOfTrees && (
+              <Tree nodes={JSON.parse(localStorage.getItem(String(indexOfTreeShown)))} />
+            )) ||
+            (indexOfTreeShown === existingNumOfTrees && (
+              <TreeGenerator addNewTree={(nodes) => { addNewTree(nodes) }} />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

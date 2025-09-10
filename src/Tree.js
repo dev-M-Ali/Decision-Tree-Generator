@@ -1,31 +1,33 @@
-import { memo, useEffect } from "react"
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, memo } from 'react';
 import {
     Background,
     ReactFlow,
     addEdge,
     ConnectionLineType,
-    Panel,
     useNodesState,
     useEdgesState,
 } from '@xyflow/react';
 import dagre from '@dagrejs/dagre';
 import '@xyflow/react/dist/style.css';
+import styles from './Tree.module.css';
+import CustomNode from './CustomNode';
+
+const nodeTypes = {
+  custom: CustomNode,
+};
 
 function Tree(props) {
-    //console.log(JSON.stringify(props.nodes))
-
     const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
-    const nodeWidth = 172;
-    const nodeHeight = 36;
+    const nodeWidth = 250;
+    const nodeHeight = 80;
 
     const getLayoutedElements = (nodes, direction = 'TB') => {
         const isHorizontal = direction === 'LR';
         dagreGraph.setGraph({ rankdir: direction, nodesep: 80, ranksep: 100 });
 
         nodes.forEach((node) => {
-            dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+            dagreGraph.setNode(String(node.id), { width: nodeWidth, height: nodeHeight });
         });
 
         const edges = []
@@ -33,25 +35,33 @@ function Tree(props) {
         nodes.forEach((node) => {
             if (node.parent !== -1)
             {
-                dagreGraph.setEdge(node.parent, node.id);
-                edges.push({ id: `${node.parent}-${node.id}`, source: String(node.parent), target: String(node.id) })
+                dagreGraph.setEdge(String(node.parent), String(node.id));
+                edges.push({ 
+                    id: `${node.parent}-${node.id}`, 
+                    source: String(node.parent), 
+                    target: String(node.id),
+                    type: 'smoothstep'
+                })
             }
         });
 
         dagre.layout(dagreGraph);
 
         const newNodes = nodes.map((node) => {
-            const nodeWithPosition = dagreGraph.node(node.id);
+            const nodeWithPosition = dagreGraph.node(String(node.id));
+            const isRoot = node.parent === -1;
+            const isLeaf = !nodes.some(n => n.parent === node.id);
+            
             const newNode = {
                 id: String(node.id),
                 data: {
-                    label: node.content
+                    label: node.content,
+                    isRoot: isRoot,
+                    isLeaf: isLeaf
                 },
-                type: 'default',
+                type: 'custom',
                 targetPosition: isHorizontal ? 'left' : 'top',
                 sourcePosition: isHorizontal ? 'right' : 'bottom',
-                // We are shifting the dagre node position (anchor=center center) to the top left
-                // so it matches the React Flow node anchor point (top left).
                 position: {
                     x: nodeWithPosition.x - nodeWidth / 2,
                     y: nodeWithPosition.y - nodeHeight / 2,
@@ -65,8 +75,6 @@ function Tree(props) {
     };
 
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(props.nodes);
-    // console.log(layoutedNodes)
-    // console.log(layoutedEdges)
 
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
@@ -78,6 +86,7 @@ function Tree(props) {
             ),
         [],
     );
+    
     const onLayout = useCallback(
         (direction) => {
             const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
@@ -88,7 +97,7 @@ function Tree(props) {
             setNodes([...layoutedNodes]);
             setEdges([...layoutedEdges]);
         },
-        [nodes, edges],
+        [props.nodes],
     );
 
     useEffect(() => {
@@ -98,7 +107,7 @@ function Tree(props) {
     }, [props.nodes]);
 
     return (
-        <div style={{ width: '100vw', height: '100vh' }}>
+        <div className={styles.treeContainer}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -106,20 +115,35 @@ function Tree(props) {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 connectionLineType={ConnectionLineType.SmoothStep}
+                nodeTypes={nodeTypes}
                 fitView
+                fitViewOptions={{ padding: 0.2 }}
             >
-                <Panel position="top-right">
-                    <button className="xy-theme__button" onClick={() => onLayout('TB')}>
-                        vertical layout
+                <div className={styles.controlPanel}>
+                    <div className={styles.controlTitle}>Layout Options</div>
+                    <button 
+                        className={styles.layoutButton} 
+                        onClick={() => onLayout('TB')}
+                    >
+                        📋 Vertical Layout
                     </button>
-                    <button className="xy-theme__button" onClick={() => onLayout('LR')}>
-                        horizontal layout
+                    <button 
+                        className={styles.layoutButton} 
+                        onClick={() => onLayout('LR')}
+                    >
+                        📊 Horizontal Layout
                     </button>
-                </Panel>
+                    <button 
+                        className={styles.homeButton}
+                        onClick={() => window.location.reload()}
+                    >
+                        🏠 Back to Home
+                    </button>
+                </div>
                 <Background />
             </ReactFlow>
         </div>
     );
 }
 
-export default memo(Tree)
+export default memo(Tree);
