@@ -16,7 +16,15 @@ Therefore, we present to you our Decision Tree Generator: A simple web applicati
 - **Professional UI**: Modern, glass-morphism design with smooth animations
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 
-## 🚀 Getting Started
+## � Screenshots
+
+### Main Interface
+![Decision Tree Generator Interface](demo/demo_1.png)
+
+### Generated Decision Tree Visualization
+![Decision Tree Visualization](demo/demo_2.png)
+
+## �🚀 Getting Started
 
 ### Prerequisites
 
