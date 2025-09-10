@@ -25,8 +25,9 @@ function App() {
   }
 
   // console.log("Index of tree shown is now: ", indexOfTreeShown)
+  // console.log(localStorage.getItem(String(indexOfTreeShown)))
   // console.log("Number of trees created yet is: ", treesCreated)
-  //console.log(existingNumOfTrees)
+  // console.log(existingNumOfTrees)
 
   return (
     <div className="App">
